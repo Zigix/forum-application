@@ -5,10 +5,7 @@ import com.example.forumapp.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -22,5 +19,9 @@ public class AuthApi {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-
+    @GetMapping("/verification")
+    public ResponseEntity<String> verifyAccount(@RequestParam("token") String token) {
+        authService.verifyAccount(token);
+        return ResponseEntity.ok("Account activated successfully");
+    }
 }

@@ -1,6 +1,6 @@
 package com.example.forumapp.service;
 
-import com.example.forumapp.repository.UserRepo;
+import com.example.forumapp.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private UserRepo userRepo;
+    private UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepo.findByUsername(username)
+        return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
     }
 }
