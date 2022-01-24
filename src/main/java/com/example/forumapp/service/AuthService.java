@@ -1,7 +1,11 @@
 package com.example.forumapp.service;
 
+import com.example.forumapp.configuration.security.JwtTokenUtil;
 import com.example.forumapp.domain.UserMapper;
+import com.example.forumapp.domain.dto.AuthenticationResponse;
+import com.example.forumapp.domain.dto.LoginRequest;
 import com.example.forumapp.domain.dto.RegisterUserRequest;
+import com.example.forumapp.domain.dto.UserView;
 import com.example.forumapp.domain.exception.EmailExistsException;
 import com.example.forumapp.domain.exception.TokenNotFoundException;
 import com.example.forumapp.domain.exception.UsernameExistsException;
@@ -10,6 +14,13 @@ import com.example.forumapp.domain.model.VerificationToken;
 import com.example.forumapp.repository.UserRepository;
 import com.example.forumapp.repository.VerificationTokenRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,6 +39,8 @@ public class AuthService {
     private final VerificationTokenRepository verificationTokenRepository;
     private final UserMapper userMapper;
     private final MailService mailService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenUtil jwtTokenUtil;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
@@ -79,5 +92,24 @@ public class AuthService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with name - " + username));
         user.setEnabled(true);
         userRepository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public User getLoggedUser() {
+        return (User) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
+    }
+
+    @Transactional
+    public AuthenticationResponse login(LoginRequest request) {
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        User user = getLoggedUser();
+        String jwtToken = jwtTokenUtil.generate(authentication);
+
+        return new AuthenticationResponse(userMapper.toUserView(user), jwtToken);
     }
 }

@@ -1,10 +1,15 @@
 package com.example.forumapp.api;
 
+import com.example.forumapp.domain.dto.AuthenticationResponse;
+import com.example.forumapp.domain.dto.LoginRequest;
 import com.example.forumapp.domain.dto.RegisterUserRequest;
+import com.example.forumapp.domain.dto.UserView;
+import com.example.forumapp.domain.model.User;
 import com.example.forumapp.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,5 +28,14 @@ public class AuthApi {
     public ResponseEntity<String> verifyAccount(@RequestParam("token") String token) {
         authService.verifyAccount(token);
         return ResponseEntity.ok("Account activated successfully");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest request) {
+        try {
+            return ResponseEntity.ok(authService.login(request));
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 }

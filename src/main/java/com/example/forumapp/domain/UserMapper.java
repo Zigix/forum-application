@@ -10,8 +10,8 @@ public class UserMapper {
     public UserView toUserView(User user) {
         UserView userView = new UserView();
         userView.setId(user.getId());
-        userView.setEmail(userView.getEmail());
-        userView.setUsername(userView.getUsername());
+        userView.setEmail(user.getEmail());
+        userView.setUsername(user.getUsername());
         userView.setCreatedDate(user.getCreatedDate());
         userView.setEnabled(user.isEnabled());
         return userView;
