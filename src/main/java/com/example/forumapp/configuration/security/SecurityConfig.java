@@ -1,7 +1,6 @@
 package com.example.forumapp.configuration.security;
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.authentication.AuthenticationManager;

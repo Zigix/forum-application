@@ -22,10 +22,10 @@ public interface PostGroupMapper {
     PostGroup toPostGroup(CreatePostGroupRequest request, User user);
 
     @Mapping(target = "creator", expression = "java(postGroup.getUser().getUsername())")
-    @Mapping(target = "numberOfPosts", expression = "java(getPostsSize(postGroup.getPosts()))")
+    @Mapping(target = "numberOfPosts", expression = "java(getNumberOfPosts(postGroup.getPosts()))")
     PostGroupView toPostGroupView(PostGroup postGroup);
 
-    default Integer getPostsSize(List<Post> posts) {
+    default Integer getNumberOfPosts(List<Post> posts) {
         if (posts == null) {
             return 0;
         }

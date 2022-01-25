@@ -92,16 +92,6 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public User getLoggedUser() {
-        /*String username = (String) SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal();
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username " + username + " not found"));*/
-        System.out.println(SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getPrincipal());
         return (User) SecurityContextHolder
                 .getContext()
                 .getAuthentication()
