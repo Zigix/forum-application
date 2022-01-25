@@ -28,6 +28,6 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     private PostGroup postGroup;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> comments;
 }
