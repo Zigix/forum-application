@@ -11,9 +11,11 @@ import com.example.forumapp.domain.model.User;
 import com.example.forumapp.repository.PostGroupRepository;
 import com.example.forumapp.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.naming.NoPermissionException;
 import java.util.List;
 
 @Service
@@ -62,6 +64,10 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() ->
                         new PostGroupNotFoundException("Post with id " + id + " not found"));
+        User user = authService.getLoggedUser();
+        if (!user.equals(post.getUser())) {
+            throw new IllegalStateException("No permission to delete this post");
+        }
         postRepository.delete(post);
     }
 }
