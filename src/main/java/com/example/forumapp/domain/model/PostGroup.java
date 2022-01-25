@@ -1,11 +1,16 @@
 package com.example.forumapp.domain.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.List;
 
 @Entity
 @Table(name = "post_groups")
+@Getter
+@Setter
 public class PostGroup {
 
     @Id
