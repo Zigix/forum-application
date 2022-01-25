@@ -64,8 +64,8 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() ->
                         new PostGroupNotFoundException("Post with id " + id + " not found"));
-        User user = authService.getLoggedUser();
-        if (!user.equals(post.getUser())) {
+        String username = authService.getLoggedUser().getUsername();
+        if (!username.equals(post.getUser().getUsername())) {
             throw new IllegalStateException("No permission to delete this post");
         }
         postRepository.delete(post);

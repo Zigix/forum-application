@@ -1,11 +1,14 @@
 package com.example.forumapp.configuration.security;
 
+import com.example.forumapp.domain.model.User;
+import com.example.forumapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -21,7 +24,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
     private final JwtTokenUtil jwtTokenUtil;
-    private final UserDetailsService userDetailsService;
+    private final UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -31,12 +34,14 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         if (StringUtils.hasText(jwtToken) && jwtTokenUtil.validate(jwtToken)) {
             String username = jwtTokenUtil.getUsername(jwtToken);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() ->
+                            new UsernameNotFoundException("Username - " + username + " not found"));
 
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                    userDetails,
+                    user,
                     null,
-                    userDetails.getAuthorities()
+                    user.getAuthorities()
             );
             token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 

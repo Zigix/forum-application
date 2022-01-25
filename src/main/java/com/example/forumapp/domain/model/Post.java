@@ -22,7 +22,7 @@ public class Post {
     private String description;
     private Instant createdDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)

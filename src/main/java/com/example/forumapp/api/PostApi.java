@@ -32,7 +32,7 @@ public class PostApi {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(CreatePostRequest request) {
+    public ResponseEntity<Void> create(@RequestBody CreatePostRequest request) {
         postService.create(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
