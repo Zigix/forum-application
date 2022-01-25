@@ -1,4 +1,4 @@
-package com.example.forumapp.domain;
+package com.example.forumapp.domain.mapper;
 
 import com.example.forumapp.domain.dto.UserView;
 import com.example.forumapp.domain.model.User;

@@ -1,11 +1,10 @@
 package com.example.forumapp.service;
 
 import com.example.forumapp.configuration.security.JwtTokenUtil;
-import com.example.forumapp.domain.UserMapper;
+import com.example.forumapp.domain.mapper.UserMapper;
 import com.example.forumapp.domain.dto.AuthenticationResponse;
 import com.example.forumapp.domain.dto.LoginRequest;
 import com.example.forumapp.domain.dto.RegisterUserRequest;
-import com.example.forumapp.domain.dto.UserView;
 import com.example.forumapp.domain.exception.EmailExistsException;
 import com.example.forumapp.domain.exception.TokenNotFoundException;
 import com.example.forumapp.domain.exception.UsernameExistsException;
@@ -14,10 +13,7 @@ import com.example.forumapp.domain.model.VerificationToken;
 import com.example.forumapp.repository.UserRepository;
 import com.example.forumapp.repository.VerificationTokenRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
