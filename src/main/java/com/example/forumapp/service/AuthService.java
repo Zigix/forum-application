@@ -13,6 +13,7 @@ import com.example.forumapp.domain.model.VerificationToken;
 import com.example.forumapp.repository.UserRepository;
 import com.example.forumapp.repository.VerificationTokenRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

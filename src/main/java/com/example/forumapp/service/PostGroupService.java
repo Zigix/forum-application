@@ -8,41 +8,49 @@ import com.example.forumapp.domain.mapper.PostGroupMapper;
 import com.example.forumapp.domain.model.PostGroup;
 import com.example.forumapp.repository.PostGroupRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PostGroupService {
     private final AuthService authService;
     private final PostGroupRepository postGroupRepository;
     private final PostGroupMapper postGroupMapper;
 
+    @Async
     @Transactional(readOnly = true)
-    public List<PostGroupView> getAll() {
-        return postGroupRepository.findAll()
+    public CompletableFuture<List<PostGroupView>> getAll() {
+        log.info("getAll() method has been invoked");
+        return CompletableFuture.completedFuture(postGroupRepository.findAll()
                 .stream()
                 .map(postGroupMapper::toPostGroupView)
-                .toList();
+                .toList());
     }
 
+    @Async
     @Transactional(readOnly = true)
-    public PostGroupView get(Long id) {
+    public CompletableFuture<PostGroupView> get(Long id) {
+        log.info("get() method has been invoked");
         PostGroup postGroup = postGroupRepository.findById(id)
                 .orElseThrow(() ->
                         new PostGroupNotFoundException("PostGroup with id " + id + " not found"));
-        return postGroupMapper.toPostGroupView(postGroup);
+        return CompletableFuture.completedFuture(postGroupMapper.toPostGroupView(postGroup));
     }
 
     @Transactional
-    public PostGroupView create(CreatePostGroupRequest request) {
+    public CompletableFuture<PostGroupView> create(CreatePostGroupRequest request) {
         if (postGroupRepository.findByName(request.getName()).isPresent()) {
             throw new PostGroupNameExistsException("PostGroup with name " + request.getName() + " already exists");
         }
         PostGroup postGroup = postGroupMapper.toPostGroup(request, authService.getLoggedUser());
         PostGroup save = postGroupRepository.save(postGroup);
-        return postGroupMapper.toPostGroupView(save);
+        return CompletableFuture.completedFuture(postGroupMapper.toPostGroupView(save));
     }
 }

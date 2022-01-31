@@ -18,17 +18,17 @@ public class PostApi {
 
     @GetMapping("/{id}")
     public ResponseEntity<PostView> get(@PathVariable Long id) {
-        return ResponseEntity.ok(postService.get(id));
+        return ResponseEntity.ok(postService.get(id).join());
     }
 
     @GetMapping("/by-post-group/{id}")
     public ResponseEntity<List<PostView>> getByGroup(@PathVariable Long id) {
-        return ResponseEntity.ok(postService.getByGroup(id));
+        return ResponseEntity.ok(postService.getByGroup(id).join());
     }
 
     @GetMapping("/by-user/{username}")
     public ResponseEntity<List<PostView>> getByUser(@PathVariable String username) {
-        return ResponseEntity.ok(postService.getByUser(username));
+        return ResponseEntity.ok(postService.getByUser(username).join());
     }
 
     @PostMapping

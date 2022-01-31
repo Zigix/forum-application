@@ -18,17 +18,17 @@ public class PostGroupApi {
 
     @GetMapping
     public ResponseEntity<List<PostGroupView>> getAll() {
-        return ResponseEntity.ok(postGroupService.getAll());
+        return ResponseEntity.ok(postGroupService.getAll().join());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PostGroupView> get(@PathVariable Long id) {
-        return ResponseEntity.ok(postGroupService.get(id));
+        return ResponseEntity.ok(postGroupService.get(id).join());
     }
 
     @PostMapping
     public ResponseEntity<PostGroupView> create(@RequestBody CreatePostGroupRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(postGroupService.create(request));
+                .body(postGroupService.create(request).join());
     }
 }

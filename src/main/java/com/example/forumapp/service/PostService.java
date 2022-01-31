@@ -11,12 +11,12 @@ import com.example.forumapp.domain.model.User;
 import com.example.forumapp.repository.PostGroupRepository;
 import com.example.forumapp.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.PermissionDeniedDataAccessException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.naming.NoPermissionException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -26,30 +26,34 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
 
+    @Async
     @Transactional(readOnly = true)
-    public PostView get(Long id) {
+    public CompletableFuture<PostView> get(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() ->
                         new PostNotFoundException("Post with id " + id + " not found"));
-        return postMapper.toPostView(post);
+        return CompletableFuture.completedFuture(postMapper.toPostView(post));
     }
 
+    @Async
     @Transactional(readOnly = true)
-    public List<PostView> getByGroup(Long id) {
-        return postRepository.findAllByPostGroupId(id)
+    public CompletableFuture<List<PostView>> getByGroup(Long id) {
+        return CompletableFuture.completedFuture(postRepository.findAllByPostGroupId(id)
                 .stream()
                 .map(postMapper::toPostView)
-                .toList();
+                .toList());
     }
 
+    @Async
     @Transactional(readOnly = true)
-    public List<PostView> getByUser(String username) {
-        return postRepository.findAllByUserUsername(username)
+    public CompletableFuture<List<PostView>> getByUser(String username) {
+        return CompletableFuture.completedFuture(postRepository.findAllByUserUsername(username)
                 .stream()
                 .map(postMapper::toPostView)
-                .toList();
+                .toList());
     }
 
+    @Transactional
     public void create(CreatePostRequest request) {
         PostGroup postGroup = postGroupRepository
                 .findById(request.getPostGroupId())
@@ -60,6 +64,7 @@ public class PostService {
         postRepository.save(post);
     }
 
+    @Transactional
     public void delete(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() ->

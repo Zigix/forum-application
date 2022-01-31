@@ -18,17 +18,17 @@ public class CommentApi {
 
     @GetMapping("/{id}")
     public ResponseEntity<CommentView> get(@PathVariable Long id) {
-        return ResponseEntity.ok(commentService.get(id));
+        return ResponseEntity.ok(commentService.get(id).join());
     }
 
     @GetMapping("/by-post/{id}")
     public ResponseEntity<List<CommentView>> getByPost(@PathVariable Long id) {
-        return ResponseEntity.ok(commentService.getByPost(id));
+        return ResponseEntity.ok(commentService.getByPost(id).join());
     }
 
     @GetMapping("/by-user/{username}")
     public ResponseEntity<List<CommentView>> getByUser(@PathVariable String username) {
-        return ResponseEntity.ok(commentService.getByUser(username));
+        return ResponseEntity.ok(commentService.getByUser(username).join());
     }
 
     @PostMapping

@@ -4,7 +4,6 @@ import com.example.forumapp.domain.dto.CommentView;
 import com.example.forumapp.domain.dto.CreateCommentRequest;
 import com.example.forumapp.domain.exception.CommentNotFoundException;
 import com.example.forumapp.domain.exception.PostGroupNotFoundException;
-import com.example.forumapp.domain.exception.PostNotFoundException;
 import com.example.forumapp.domain.mapper.CommentMapper;
 import com.example.forumapp.domain.model.Comment;
 import com.example.forumapp.domain.model.Post;
@@ -12,11 +11,12 @@ import com.example.forumapp.domain.model.User;
 import com.example.forumapp.repository.CommentRepository;
 import com.example.forumapp.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.quartz.QuartzTransactionManager;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -26,28 +26,31 @@ public class CommentService {
     private final PostRepository postRepository;
     private final CommentMapper commentMapper;
 
+    @Async
     @Transactional(readOnly = true)
-    public CommentView get(Long id) {
+    public CompletableFuture<CommentView> get(Long id) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() ->
                         new CommentNotFoundException("Comment with id " + id + " not found"));
-        return commentMapper.toCommentView(comment);
+        return CompletableFuture.completedFuture(commentMapper.toCommentView(comment));
     }
 
+    @Async
     @Transactional(readOnly = true)
-    public List<CommentView> getByPost(Long id) {
-        return commentRepository.findAllByPostId(id)
+    public CompletableFuture<List<CommentView>> getByPost(Long id) {
+        return CompletableFuture.completedFuture(commentRepository.findAllByPostId(id)
                 .stream()
                 .map(commentMapper::toCommentView)
-                .toList();
+                .toList());
     }
 
+    @Async
     @Transactional(readOnly = true)
-    public List<CommentView> getByUser(String username) {
-        return commentRepository.findAllByUserUsername(username)
+    public CompletableFuture<List<CommentView>> getByUser(String username) {
+        return CompletableFuture.completedFuture(commentRepository.findAllByUserUsername(username)
                 .stream()
                 .map(commentMapper::toCommentView)
-                .toList();
+                .toList());
     }
 
     @Transactional

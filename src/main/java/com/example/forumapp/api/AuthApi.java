@@ -3,8 +3,6 @@ package com.example.forumapp.api;
 import com.example.forumapp.domain.dto.AuthenticationResponse;
 import com.example.forumapp.domain.dto.LoginRequest;
 import com.example.forumapp.domain.dto.RegisterUserRequest;
-import com.example.forumapp.domain.dto.UserView;
-import com.example.forumapp.domain.model.User;
 import com.example.forumapp.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
